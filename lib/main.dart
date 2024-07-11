@@ -1,23 +1,25 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:fluttering_flat/bloc/animal_bloc.dart';
+import 'package:fluttering_flat/pages/animal_bloc_page.dart';
 import 'package:fluttering_flat/pages/animal_list.dart';
-import 'package:fluttering_flat/utils/colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-class Animal {
-  final String name;
-  final String description;
-  final int height;
-
-  const Animal(this.name, this.description, this.height);
-}
 
 class AnimalCubit extends Cubit<Animal> {
   AnimalCubit(super.initState);
 
-  Future<void> describe() async {
-    await for (dynamic animal in stream) {
-      debugPrint(animal);
-    }
+  void describe() {
+    debugPrint(state.name);
+  }
+
+  StreamSubscription<Animal> listen() {
+    return stream.listen((e) => debugPrint('$e Hello'));
+  }
+
+  void renameAnimal(String newName) {
+    state.name = newName;
+    emit(state);
   }
 }
 
@@ -51,7 +53,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    AnimalCubit(const Animal('sd', 'asd', 43)).describe();
     return Scaffold(
         appBar: AppBar(
           title: const Text('AppBar Demo'),
@@ -87,7 +88,18 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-        body: Container(
-            color: const Color(ThemeColors.black), child: AnimalList()));
+        body: BlocProvider(
+            create: (_) => AnimalBloc(Animal(
+                "Lion",
+                "Panthera leo",
+                "Felidae",
+                "Grasslands and Savannas",
+                "Africa",
+                "Carnivore",
+                "The lion is a large and powerful wild cat known for its majestic appearance and social behavior.",
+                190,
+                120,
+                "https://fakeimg.pl/500x500/cc6601")),
+            child: const AnimalBlocPage()));
   }
 }

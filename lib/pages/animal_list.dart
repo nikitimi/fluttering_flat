@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttering_flat/bloc/animal_bloc.dart';
 import 'package:fluttering_flat/pages/animal_details.dart';
 import 'package:fluttering_flat/utils/colors.dart';
 import 'package:fluttering_flat/utils/fonts.dart';
@@ -35,7 +36,7 @@ class AnimalList extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (BuildContext context) => AnimalDetails(
-                                  animalInfo: AnimalInfo(
+                                  animalInfo: Animal(
                                       animals["name"],
                                       animals["species"],
                                       animals["family"],
@@ -66,11 +67,9 @@ class AnimalList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: FutureBuilder(
-            future: _baseApi(baseUrl),
-            builder: (BuildContext builder,
-                    AsyncSnapshot<String> asyncSnapshot) =>
-                animalList(asyncSnapshot.connectionState, asyncSnapshot.data)));
+    return FutureBuilder(
+        future: _baseApi(baseUrl),
+        builder: (BuildContext builder, AsyncSnapshot<String> asyncSnapshot) =>
+            animalList(asyncSnapshot.connectionState, asyncSnapshot.data));
   }
 }
