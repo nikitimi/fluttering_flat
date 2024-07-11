@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fluttering_flat/pages/animalDetails.dart';
+import 'package:fluttering_flat/pages/animal_details.dart';
 import 'package:fluttering_flat/utils/colors.dart';
 import 'package:fluttering_flat/utils/fonts.dart';
 import 'package:http/http.dart' as http;

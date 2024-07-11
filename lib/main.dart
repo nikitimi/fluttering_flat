@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttering_flat/pages/animalList.dart';
+import 'package:fluttering_flat/pages/animal_list.dart';
 import 'package:fluttering_flat/utils/colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
