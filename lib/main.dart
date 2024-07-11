@@ -1,6 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:fluttering_flat/pages/animalList.dart';
 import 'package:fluttering_flat/utils/colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class Animal {
+  final String name;
+  final String description;
+  final int height;
+
+  const Animal(this.name, this.description, this.height);
+}
+
+class AnimalCubit extends Cubit<Animal> {
+  AnimalCubit(super.initState);
+
+  Future<void> describe() async {
+    await for (dynamic animal in stream) {
+      debugPrint(animal);
+    }
+  }
+}
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +51,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    AnimalCubit(const Animal('sd', 'asd', 43)).describe();
     return Scaffold(
         appBar: AppBar(
           title: const Text('AppBar Demo'),
