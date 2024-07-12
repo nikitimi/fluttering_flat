@@ -2,9 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:fluttering_flat/bloc/animal_bloc.dart';
+import 'package:fluttering_flat/bloc/animal_bloc_state.dart';
 import 'package:fluttering_flat/pages/animal_bloc_page.dart';
-import 'package:fluttering_flat/pages/animal_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttering_flat/utils/colors.dart';
+
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 class AnimalCubit extends Cubit<Animal> {
   AnimalCubit(super.initState);
@@ -34,7 +38,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Spot My Pie',
+      title: 'The Animal Kingdom Kwak!',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -51,55 +55,108 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  static const baseUrl = 'https://freetestapi.com/api/v1/animals';
+
+  Future<List<Animal>> _future(String argumentUrl) async {
+    final url = Uri.parse(argumentUrl);
+    final response = await http.get(url);
+    final List<dynamic> animals = convert.jsonDecode(response.body);
+
+    final keys = [
+      "id",
+      "name",
+      "species",
+      "family",
+      "habitat",
+      "place_of_found",
+      "diet",
+      "description",
+      "weight_kg",
+      "height_cm",
+      "image"
+    ];
+    late List<Animal> casted = [];
+
+    for (dynamic animal in animals) {
+      casted.add(Animal(
+        animal[keys[0]],
+        animal[keys[1]],
+        animal[keys[2]],
+        animal[keys[3]],
+        animal[keys[4]],
+        animal[keys[5]],
+        animal[keys[6]],
+        animal[keys[7]],
+        animal[keys[8]],
+        animal[keys[9]],
+        animal[keys[10]],
+      ));
+    }
+
+    return casted;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('AppBar Demo'),
+          backgroundColor: const Color(ThemeColors.black),
+          title: const Text(
+            'The Animal Kingdom Kwak!',
+            style: TextStyle(color: Color(ThemeColors.green)),
+          ),
           actions: <Widget>[
             IconButton(
+              color: const Color(ThemeColors.green),
               icon: const Icon(Icons.add_alert),
-              tooltip: 'Show Snackbar',
+              tooltip: 'Show the Lion',
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('This is a snackbar')));
+                    const SnackBar(content: Text('King of the Jungle Roar!')));
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.navigate_next),
-              tooltip: 'Go to the next page',
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute<void>(
-                  builder: (BuildContext context) {
-                    return Scaffold(
-                      appBar: AppBar(
-                        title: const Text('Next page'),
-                      ),
-                      body: const Center(
-                        child: Text(
-                          'This is the next page',
-                          style: TextStyle(fontSize: 24),
-                        ),
-                      ),
-                    );
-                  },
-                ));
-              },
-            ),
+            // IconButton(
+            //   icon: const Icon(Icons.navigate_next),
+            //   tooltip: 'Go to the next page',
+            //   onPressed: () {
+            //     Navigator.push(context, MaterialPageRoute<void>(
+            //       builder: (BuildContext context) {
+            //         return Scaffold(
+            //           appBar: AppBar(
+            //             title: const Text('Next page'),
+            //           ),
+            //           body: const Center(
+            //             child: Text(
+            //               'This is the next page',
+            //               style: TextStyle(fontSize: 24),
+            //             ),
+            //           ),
+            //         );
+            //       },
+            //     ));
+            //   },
+            // ),
           ],
         ),
-        body: BlocProvider(
-            create: (_) => AnimalBloc(Animal(
-                "Lion",
-                "Panthera leo",
-                "Felidae",
-                "Grasslands and Savannas",
-                "Africa",
-                "Carnivore",
-                "The lion is a large and powerful wild cat known for its majestic appearance and social behavior.",
-                190,
-                120,
-                "https://fakeimg.pl/500x500/cc6601")),
-            child: const AnimalBlocPage()));
+        body: FutureBuilder(
+            future: _future(baseUrl),
+            builder: (BuildContext builder,
+                    AsyncSnapshot<List<Animal>> snapshot) =>
+                BlocProvider(
+                    create: (_) {
+                      debugPrint(snapshot.toString());
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return AnimalBloc(AnimalState(snapshot.data ?? []));
+                      }
+                      return AnimalBloc(AnimalState([]));
+                    },
+                    child: snapshot.connectionState == ConnectionState.done
+                        ? const AnimalBlocPage()
+                        : const Placeholder(
+                            color: Color(ThemeColors.black),
+                            child: Text('Loading',
+                                style:
+                                    TextStyle(color: Color(ThemeColors.white))),
+                          ))));
   }
 }

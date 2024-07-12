@@ -1,42 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttering_flat/bloc/animal_bloc_events.dart';
+import 'package:fluttering_flat/bloc/animal_bloc_state.dart';
 
-class Animal {
-  String name;
-  final String species;
-  final String family;
-  final String habitat;
-  final String placeOfFound;
-  final String diet;
-  final String description;
-  final int weightKg;
-  final int heightCm;
-  final String image;
-
-  Animal(this.name, this.species, this.family, this.habitat, this.placeOfFound,
-      this.diet, this.description, this.weightKg, this.heightCm, this.image);
-}
-
-class AnimalEvent {}
-
-class AnimalRenameEvent extends AnimalEvent {
-  final String newName;
-
-  AnimalRenameEvent(this.newName);
-}
-
-class AnimalBloc extends Bloc<AnimalEvent, Animal> {
+class AnimalBloc extends Bloc<AnimalEvent, AnimalState> {
   AnimalBloc(super.animal) {
     on<AnimalRenameEvent>((event, emit) {
-      state.name = event.newName;
-      emit(state);
+      state.animals[event.index].name = event.newName;
+      emit(AnimalState(state.animals));
     });
   }
 
   @override
-  void onChange(Change<Animal> change) {
+  void onChange(Change<AnimalState> change) {
     // TODO: implement onChange
     super.onChange(change);
-    debugPrint('On Change event is fired: ${change.toString()}');
+    debugPrint('On Change event is fired! -> ${change.toString()}');
   }
 }
