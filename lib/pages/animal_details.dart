@@ -5,12 +5,39 @@ import 'package:fluttering_flat/utils/fonts.dart';
 
 class AnimalDetails extends StatelessWidget {
   const AnimalDetails({super.key, required this.animalInfo});
-  static const textStyle = TextStyle(
-      fontSize: ThemeFonts.lg,
-      decoration: TextDecoration.none,
-      color: Color(ThemeColors.green));
 
   final Animal animalInfo;
+
+  static const animalNameStyle = TextStyle(
+      fontSize: ThemeFonts.xl,
+      fontWeight: FontWeight.w900,
+      color: Color(ThemeColors.violet),
+      decoration: TextDecoration.none);
+  static const titleStyle = TextStyle(
+      fontSize: ThemeFonts.md,
+      decoration: TextDecoration.none,
+      color: Color(ThemeColors.green));
+  static const textStyle = TextStyle(
+      fontSize: ThemeFonts.sm,
+      decoration: TextDecoration.none,
+      color: Color(ThemeColors.white));
+
+  static Widget rowWidget(String title, String value) => SizedBox(
+      width: 480,
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('$title: ', style: titleStyle),
+            SizedBox(
+              width: 240,
+              child: Text(
+                value,
+                style: textStyle,
+                softWrap: true,
+              ),
+            )
+          ]));
 
   @override
   Widget build(BuildContext context) {
@@ -18,27 +45,28 @@ class AnimalDetails extends StatelessWidget {
         color: const Color(ThemeColors.black),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.network(
               animalInfo.image,
               height: 120,
             ),
-            Text(
-              animalInfo.name,
-              style: const TextStyle(
-                  fontSize: ThemeFonts.xl,
-                  fontWeight: FontWeight.bold,
-                  color: Color(ThemeColors.violet),
-                  decoration: TextDecoration.none),
+            Container(
+              height: 80,
+              alignment: Alignment.center,
+              child: Text(
+                animalInfo.name,
+                style: animalNameStyle,
+              ),
             ),
-            Text(animalInfo.species, style: textStyle),
-            Text(animalInfo.description, style: textStyle),
-            Text(animalInfo.diet, style: textStyle),
-            Text(animalInfo.family, style: textStyle),
-            Text(animalInfo.habitat, style: textStyle),
-            Text(animalInfo.placeOfFound, style: textStyle),
-            Text(animalInfo.heightCm.toString(), style: textStyle),
-            Text(animalInfo.weightKg.toString(), style: textStyle),
+            rowWidget("Species", animalInfo.species),
+            rowWidget("Description", animalInfo.description),
+            rowWidget("Diet", animalInfo.diet),
+            rowWidget("Family", animalInfo.family),
+            rowWidget("Habitat", animalInfo.habitat),
+            rowWidget("Area of habitat", animalInfo.placeOfFound),
+            rowWidget("Height", '${animalInfo.heightCm}'),
+            rowWidget("Weight", '${animalInfo.weightKg}'),
           ],
         ));
   }
